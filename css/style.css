@@ -6,19 +6,29 @@
 }
 
 /* Base */
+html {
+  height: 100%;
+}
+
 body {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  background: #fafaf8;
-  color: #2b2b2b;
+  font-family: 'Courier New', Courier, monospace;
+  background: #fff5eb;
+  color: #1a1a1a;
   line-height: 1.7;
-  font-size: 18px;
+  font-size: 22px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Container */
 .container {
-  max-width: 650px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 3rem 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header */
@@ -27,10 +37,10 @@ header {
 }
 
 header h1 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: #2b2b2b;
+  color: #1a1a1a;
 }
 
 nav {
@@ -39,32 +49,33 @@ nav {
 }
 
 nav a {
-  color: #666;
+  color: #555;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: color 0.2s;
 }
 
 nav a:hover {
-  color: #2b2b2b;
+  color: #1a1a1a;
 }
 
 nav a.active {
-  color: #2b2b2b;
+  color: #1a1a1a;
   text-decoration: underline;
 }
 
 /* Main */
 main {
   margin-bottom: 4rem;
+  flex: 1;
 }
 
 main h2 {
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   margin-top: 2.5rem;
-  color: #2b2b2b;
+  color: #1a1a1a;
 }
 
 main h2:first-child {
@@ -77,9 +88,9 @@ section {
 }
 
 .intro p {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   line-height: 1.8;
-  color: #444;
+  color: #333;
 }
 
 /* Lists */
@@ -88,25 +99,26 @@ ul {
 }
 
 ul li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 
 ul li a {
-  color: #2b2b2b;
+  color: #1a1a1a;
   text-decoration: none;
-  border-bottom: 1px solid #ddd;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #ccc;
   transition: border-color 0.2s;
 }
 
 ul li a:hover {
-  border-bottom-color: #2b2b2b;
+  border-bottom-color: #1a1a1a;
 }
 
 /* Blog Articles */
 article {
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #d5dce3;
 }
 
 article:last-child {
@@ -115,32 +127,32 @@ article:last-child {
 
 article time {
   display: block;
-  font-size: 0.9rem;
-  color: #999;
+  font-size: 1rem;
+  color: #888;
   margin-bottom: 0.5rem;
 }
 
 article h3 {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #2b2b2b;
+  color: #1a1a1a;
 }
 
 article h3 a {
-  color: #2b2b2b;
+  color: #1a1a1a;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s;
 }
 
 article h3 a:hover {
-  border-bottom-color: #2b2b2b;
+  border-bottom-color: #1a1a1a;
 }
 
 article p {
-  color: #666;
-  font-size: 1rem;
+  color: #555;
+  font-size: 1.2rem;
   line-height: 1.7;
 }
 
@@ -148,7 +160,7 @@ article p {
 .project {
   margin-bottom: 2.5rem;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #d5dce3;
 }
 
 .project:last-child {
@@ -156,15 +168,15 @@ article p {
 }
 
 .project h3 {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #2b2b2b;
+  color: #1a1a1a;
 }
 
 .project p {
-  color: #666;
-  font-size: 1rem;
+  color: #555;
+  font-size: 1.2rem;
   line-height: 1.7;
   margin-bottom: 1rem;
 }
@@ -176,33 +188,34 @@ article p {
 }
 
 .project-links a {
-  color: #2b2b2b;
+  color: #1a1a1a;
   text-decoration: none;
-  font-size: 0.95rem;
-  border-bottom: 1px solid #ddd;
+  font-size: 1.05rem;
+  border-bottom: 1px solid #ccc;
   transition: border-color 0.2s;
 }
 
 .project-links a:hover {
-  border-bottom-color: #2b2b2b;
+  border-bottom-color: #1a1a1a;
 }
 
 /* Footer */
 footer {
   padding-top: 2rem;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid #d5dce3;
+  margin-top: auto;
 }
 
 footer p {
-  color: #999;
-  font-size: 0.9rem;
+  color: #888;
+  font-size: 1rem;
   text-align: center;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
   body {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .container {
@@ -210,19 +223,33 @@ footer p {
   }
 
   header h1 {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
   }
 
   nav {
     gap: 1rem;
   }
 
+  nav a {
+    font-size: 1rem;
+  }
+
   main h2 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+  }
+
+  .intro p {
+    font-size: 1.1rem;
   }
 
   article h3,
   .project h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+  }
+
+  article p,
+  .project p,
+  ul li a {
+    font-size: 1rem;
   }
 }
