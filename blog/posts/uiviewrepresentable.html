@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bridging UIKit into SwiftUI with UIViewRepresentable - Nithindev N</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <style>
+    main h2 {
+      font-size: 1.4rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid #d5dce3;
+    }
+
+    main p { margin-bottom: 1.2rem; color: #333; font-size: 1rem; }
+
+    main ul, main ol {
+      margin: 0 0 1.2rem 1.5rem;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    main li { margin-bottom: 0.4rem; }
+
+    code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      background: #ede8e0;
+      color: #b5360a;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    pre {
+      background: #1e2434;
+      border-radius: 8px;
+      padding: 24px;
+      margin: 1.2rem 0 1.8rem;
+      overflow-x: auto;
+    }
+
+    pre code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      background: none;
+      color: #abb2bf;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    .kw  { color: #c678dd; }
+    .ty  { color: #e5c07b; }
+    .fn  { color: #61afef; }
+    .st  { color: #98c379; }
+    .cm  { color: #5c6370; font-style: italic; }
+    .nb  { color: #d19a66; }
+    .pn  { color: #abb2bf; }
+
+    .diagram {
+      background: #ede8e0;
+      border: 1px solid #c9bfb0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin: 1rem 0 1.4rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #444;
+      line-height: 1.8;
+    }
+
+    .rule-block {
+      background: #f5f0ea;
+      border-left: 4px solid #1a1a1a;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 0.8rem 0;
+    }
+
+    .rule-block p { margin: 0; color: #1a1a1a; font-size: 0.95rem; }
+
+    .callout {
+      background: #fff3d6;
+      border-left: 4px solid #c07b00;
+      border-radius: 0 6px 6px 0;
+      padding: 12px 16px;
+      margin: 1rem 0;
+    }
+
+    .callout p { margin: 0; color: #555; font-size: 0.95rem; }
+
+    .post-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Nithindev N</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/blog.html" class="active">Blog</a>
+        <a href="/projects.html">Projects</a>
+      </nav>
+    </header>
+
+    <main>
+      <article style="border-bottom: none; padding-bottom: 0;">
+        <p><a href="../../blog.html" style="color: #666; font-size: 1rem; text-decoration: none; border-bottom: 1px solid #ccc;">← Back to blog</a></p>
+
+        <span class="post-tag">iOS Development · SwiftUI · UIKit</span>
+        <time>June 10, 2026</time>
+        <h2 style="margin-top: 0.4rem; border-bottom: none; font-size: 1.7rem;">Bridging UIKit into SwiftUI with UIViewRepresentable</h2>
+        <p style="color: #666; margin-bottom: 2rem;">A PKAddPassButton case study — wrapping Apple's Wallet button for use in a SwiftUI hierarchy</p>
+
+        <h2>Why UIViewRepresentable Exists</h2>
+        <p>SwiftUI covers the vast majority of UI components you'll need in a modern iOS app. But Apple's own frameworks — PassKit, MapKit, WebKit, and others — still expose views exclusively through UIKit. When you need one of those views inside a SwiftUI hierarchy, <code>UIViewRepresentable</code> is the bridge.</p>
+        <p>SwiftUI and UIKit have fundamentally different mental models. SwiftUI <em>describes</em> what the UI should look like given the current state. UIKit manages views as long-lived objects that you mutate imperatively. <code>UIViewRepresentable</code> lets you wrap a UIKit view so SwiftUI can treat it as a first-class view — creating it, updating it, and tearing it down in sync with the SwiftUI lifecycle.</p>
+
+        <h2>The Protocol</h2>
+
+<pre><code><span class="kw">protocol</span> <span class="ty">UIViewRepresentable</span> <span class="pn">{</span>
+    <span class="kw">associatedtype</span> <span class="ty">UIViewType</span><span class="pn">:</span> <span class="ty">UIView</span>
+
+    <span class="kw">func</span> <span class="fn">makeUIView</span><span class="pn">(</span>context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="kw">-></span> <span class="ty">UIViewType</span>
+    <span class="kw">func</span> <span class="fn">updateUIView</span><span class="pn">(</span>_ uiView<span class="pn">:</span> <span class="ty">UIViewType</span><span class="pn">,</span> context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span>
+    <span class="kw">func</span> <span class="fn">makeCoordinator</span><span class="pn">()</span> <span class="kw">-></span> <span class="ty">Coordinator</span>  <span class="cm">// optional</span>
+<span class="pn">}</span>
+</code></pre>
+
+        <p>Three responsibilities:</p>
+        <ul>
+          <li><strong>makeUIView</strong> — called once to create the UIKit view. Do your one-time setup here: allocate, configure, wire up targets.</li>
+          <li><strong>updateUIView</strong> — called every time SwiftUI re-renders the wrapping struct. Sync any state from SwiftUI into the UIKit view here. If nothing needs syncing, leave it empty.</li>
+          <li><strong>makeCoordinator</strong> — returns a helper object that acts as the UIKit delegate or target/action receiver, bridging UIKit callbacks back into SwiftUI.</li>
+        </ul>
+
+        <h2>The Coordinator Pattern</h2>
+        <p>The coordinator is the piece that trips people up most. UIKit's event system is delegate- and target/action-based — it needs an <code>NSObject</code> to call methods on. Your SwiftUI struct can't fill that role (it's a value type and gets recreated constantly). The coordinator is a stable reference type that lives alongside the view and acts as the UIKit-facing receiver.</p>
+
+        <div class="diagram">SwiftUI struct <span style="color:#888">(recreated on state change)</span>
+    │
+    └── Coordinator <span style="color:#888">(stable NSObject, lives for view's lifetime)</span>
+            │
+            └── Calls back into SwiftUI via closures/bindings</div>
+
+        <h2>Wrapping PKAddPassButton</h2>
+        <p><code>PKAddPassButton</code> is a UIKit-only button from PassKit that renders Apple's standard "Add to Wallet" styling — not something you can replicate with a SwiftUI <code>Button</code>. Here's how to wrap it:</p>
+
+<pre><code><span class="kw">import</span> SwiftUI
+<span class="kw">import</span> PassKit
+
+<span class="kw">struct</span> <span class="ty">AddToWalletButton</span><span class="pn">:</span> <span class="ty">UIViewRepresentable</span> <span class="pn">{</span>
+    <span class="kw">let</span> onTap<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
+
+    <span class="kw">func</span> <span class="fn">makeUIView</span><span class="pn">(</span>context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="kw">-></span> <span class="ty">PKAddPassButton</span> <span class="pn">{</span>
+        <span class="kw">let</span> button <span class="pn">=</span> <span class="ty">PKAddPassButton</span><span class="pn">(</span>addPassButtonStyle<span class="pn">:</span> <span class="pn">.</span>black<span class="pn">)</span>
+        button<span class="pn">.</span><span class="fn">addTarget</span><span class="pn">(</span>
+            context<span class="pn">.</span>coordinator<span class="pn">,</span>
+            action<span class="pn">:</span> <span class="nb">#selector</span><span class="pn">(</span><span class="ty">Coordinator</span><span class="pn">.</span>tapped<span class="pn">),</span>
+            <span class="kw">for</span><span class="pn">:</span> <span class="pn">.</span>touchUpInside
+        <span class="pn">)</span>
+        <span class="kw">return</span> button
+    <span class="pn">}</span>
+
+    <span class="kw">func</span> <span class="fn">updateUIView</span><span class="pn">(</span>_ uiView<span class="pn">:</span> <span class="ty">PKAddPassButton</span><span class="pn">,</span> context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="pn">{}</span>
+
+    <span class="kw">func</span> <span class="fn">makeCoordinator</span><span class="pn">()</span> <span class="kw">-></span> <span class="ty">Coordinator</span> <span class="pn">{</span>
+        <span class="ty">Coordinator</span><span class="pn">(</span>onTap<span class="pn">:</span> onTap<span class="pn">)</span>
+    <span class="pn">}</span>
+
+    <span class="kw">class</span> <span class="ty">Coordinator</span><span class="pn">:</span> <span class="ty">NSObject</span> <span class="pn">{</span>
+        <span class="kw">let</span> onTap<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
+
+        <span class="kw">init</span><span class="pn">(</span>onTap<span class="pn">:</span> <span class="nb">@escaping</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span><span class="pn">)</span> <span class="pn">{</span>
+            <span class="kw">self</span><span class="pn">.</span>onTap <span class="pn">=</span> onTap
+        <span class="pn">}</span>
+
+        <span class="nb">@objc</span> <span class="kw">func</span> <span class="fn">tapped</span><span class="pn">()</span> <span class="pn">{</span>
+            <span class="fn">onTap</span><span class="pn">()</span>
+        <span class="pn">}</span>
+    <span class="pn">}</span>
+<span class="pn">}</span>
+</code></pre>
+
+        <p>Breaking down each part:</p>
+
+        <div class="rule-block"><p><strong>makeUIView</strong> — creates the <code>PKAddPassButton</code> with a style (<code>.black</code> renders the standard black wallet button Apple recommends). Wires up the tap using UIKit's target/action pattern, pointing at the coordinator.</p></div>
+        <div class="rule-block"><p><strong>updateUIView</strong> — empty here because the button has no dynamic state. If you wanted to change the style based on SwiftUI state, you'd update <code>uiView</code> here.</p></div>
+        <div class="rule-block"><p><strong>makeCoordinator</strong> — returns the <code>Coordinator</code>, passing in the <code>onTap</code> closure. SwiftUI calls this <em>before</em> <code>makeUIView</code>, so <code>context.coordinator</code> is already available when you wire the target.</p></div>
+        <div class="rule-block"><p><strong>Coordinator</strong> — a plain <code>NSObject</code> subclass. The <code>@objc</code> attribute on <code>tapped()</code> is required for UIKit's target/action system to see the method via the Objective-C runtime.</p></div>
+
+        <h2>Using It in a SwiftUI View</h2>
+
+<pre><code><span class="kw">struct</span> <span class="ty">CredentialView</span><span class="pn">:</span> <span class="ty">View</span> <span class="pn">{</span>
+    <span class="kw">var</span> onAddToWallet<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
+
+    <span class="kw">var</span> body<span class="pn">:</span> <span class="kw">some</span> <span class="ty">View</span> <span class="pn">{</span>
+        <span class="ty">VStack</span> <span class="pn">{</span>
+            <span class="cm">// ... other content</span>
+
+            <span class="ty">AddToWalletButton</span><span class="pn">(</span>onTap<span class="pn">:</span> onAddToWallet<span class="pn">)</span>
+                <span class="pn">.</span><span class="fn">frame</span><span class="pn">(</span>width<span class="pn">:</span> <span class="nb">127</span><span class="pn">,</span> height<span class="pn">:</span> <span class="nb">40</span><span class="pn">)</span>
+        <span class="pn">}</span>
+    <span class="pn">}</span>
+<span class="pn">}</span>
+</code></pre>
+
+        <p>The <code>.frame</code> modifier controls the size — <code>PKAddPassButton</code> scales to fill whatever frame you give it. Apple's recommended dimensions are 127×40pt for the standard button.</p>
+
+        <h2>Key Rules to Remember</h2>
+
+        <div class="rule-block" style="margin-bottom:10px;"><p><strong>1. makeUIView is called once — updateUIView is called many times.</strong><br>Heavy setup (delegates, subviews, targets) belongs in <code>makeUIView</code>. <code>updateUIView</code> should be fast and idempotent — it's called on every SwiftUI render cycle.</p></div>
+        <div class="rule-block" style="margin-bottom:10px;"><p><strong>2. Never store the UIView in a property on the struct.</strong><br>The struct is recreated on every render. Store state in <code>@State</code>, bindings, or the coordinator instead.</p></div>
+        <div class="rule-block" style="margin-bottom:10px;"><p><strong>3. The coordinator owns UIKit callbacks.</strong><br>Any delegate conformance or target/action method that UIKit needs to call belongs on the coordinator, not the struct.</p></div>
+        <div class="rule-block"><p><strong>4. updateUIView receives the same UIView instance every time.</strong><br>SwiftUI reuses the UIKit view — it doesn't tear it down and recreate it on every render. That's why you mutate <code>uiView</code> directly in <code>updateUIView</code> rather than creating a new one.</p></div>
+
+        <h2>When to Reach for UIViewRepresentable</h2>
+        <p>Use it when you need:</p>
+        <ul>
+          <li>A UIKit view with no SwiftUI equivalent (PassKit, MapKit, WKWebView, ARKit)</li>
+          <li>Fine-grained UIKit behaviour that SwiftUI doesn't expose (specific scroll view delegate callbacks, custom drawing)</li>
+          <li>Third-party UIKit SDKs</li>
+        </ul>
+
+        <div class="callout">
+          <p>For everything else, prefer native SwiftUI components. <code>UIViewRepresentable</code> carries a small overhead and adds conceptual complexity — it's the right tool for bridging, not a general-purpose escape hatch.</p>
+        </div>
+
+        <h2>Wrapping Up</h2>
+        <p><code>UIViewRepresentable</code> follows a clear contract: create once in <code>makeUIView</code>, sync state in <code>updateUIView</code>, and delegate UIKit callbacks through the coordinator. Once you internalise that pattern, bridging any UIKit view into SwiftUI becomes mechanical.</p>
+        <p><code>PKAddPassButton</code> is a clean example because it has no dynamic state to sync — the implementation reduces to just the creation and the callback bridge, which makes the structure easy to see.</p>
+      </article>
+    </main>
+
+    <footer>
+      <p>© 2026 Nithindev N</p>
+    </footer>
+  </div>
+</body>
+</html>
