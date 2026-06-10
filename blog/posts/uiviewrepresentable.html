@@ -169,7 +169,6 @@
 
 <pre><code><span class="kw">protocol</span> <span class="ty">UIViewRepresentable</span> <span class="pn">{</span>
     <span class="kw">associatedtype</span> <span class="ty">UIViewType</span><span class="pn">:</span> <span class="ty">UIView</span>
-
     <span class="kw">func</span> <span class="fn">makeUIView</span><span class="pn">(</span>context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="kw">-></span> <span class="ty">UIViewType</span>
     <span class="kw">func</span> <span class="fn">updateUIView</span><span class="pn">(</span>_ uiView<span class="pn">:</span> <span class="ty">UIViewType</span><span class="pn">,</span> context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span>
     <span class="kw">func</span> <span class="fn">makeCoordinator</span><span class="pn">()</span> <span class="kw">-></span> <span class="ty">Coordinator</span>  <span class="cm">// optional</span>
@@ -197,10 +196,8 @@
 
 <pre><code><span class="kw">import</span> SwiftUI
 <span class="kw">import</span> PassKit
-
 <span class="kw">struct</span> <span class="ty">AddToWalletButton</span><span class="pn">:</span> <span class="ty">UIViewRepresentable</span> <span class="pn">{</span>
     <span class="kw">let</span> onTap<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
-
     <span class="kw">func</span> <span class="fn">makeUIView</span><span class="pn">(</span>context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="kw">-></span> <span class="ty">PKAddPassButton</span> <span class="pn">{</span>
         <span class="kw">let</span> button <span class="pn">=</span> <span class="ty">PKAddPassButton</span><span class="pn">(</span>addPassButtonStyle<span class="pn">:</span> <span class="pn">.</span>black<span class="pn">)</span>
         button<span class="pn">.</span><span class="fn">addTarget</span><span class="pn">(</span>
@@ -210,20 +207,15 @@
         <span class="pn">)</span>
         <span class="kw">return</span> button
     <span class="pn">}</span>
-
     <span class="kw">func</span> <span class="fn">updateUIView</span><span class="pn">(</span>_ uiView<span class="pn">:</span> <span class="ty">PKAddPassButton</span><span class="pn">,</span> context<span class="pn">:</span> <span class="ty">Context</span><span class="pn">)</span> <span class="pn">{}</span>
-
     <span class="kw">func</span> <span class="fn">makeCoordinator</span><span class="pn">()</span> <span class="kw">-></span> <span class="ty">Coordinator</span> <span class="pn">{</span>
         <span class="ty">Coordinator</span><span class="pn">(</span>onTap<span class="pn">:</span> onTap<span class="pn">)</span>
     <span class="pn">}</span>
-
     <span class="kw">class</span> <span class="ty">Coordinator</span><span class="pn">:</span> <span class="ty">NSObject</span> <span class="pn">{</span>
         <span class="kw">let</span> onTap<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
-
         <span class="kw">init</span><span class="pn">(</span>onTap<span class="pn">:</span> <span class="nb">@escaping</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span><span class="pn">)</span> <span class="pn">{</span>
             <span class="kw">self</span><span class="pn">.</span>onTap <span class="pn">=</span> onTap
         <span class="pn">}</span>
-
         <span class="nb">@objc</span> <span class="kw">func</span> <span class="fn">tapped</span><span class="pn">()</span> <span class="pn">{</span>
             <span class="fn">onTap</span><span class="pn">()</span>
         <span class="pn">}</span>
@@ -242,11 +234,9 @@
 
 <pre><code><span class="kw">struct</span> <span class="ty">CredentialView</span><span class="pn">:</span> <span class="ty">View</span> <span class="pn">{</span>
     <span class="kw">var</span> onAddToWallet<span class="pn">:</span> <span class="pn">()</span> <span class="kw">-></span> <span class="ty">Void</span>
-
     <span class="kw">var</span> body<span class="pn">:</span> <span class="kw">some</span> <span class="ty">View</span> <span class="pn">{</span>
         <span class="ty">VStack</span> <span class="pn">{</span>
             <span class="cm">// ... other content</span>
-
             <span class="ty">AddToWalletButton</span><span class="pn">(</span>onTap<span class="pn">:</span> onAddToWallet<span class="pn">)</span>
                 <span class="pn">.</span><span class="fn">frame</span><span class="pn">(</span>width<span class="pn">:</span> <span class="nb">127</span><span class="pn">,</span> height<span class="pn">:</span> <span class="nb">40</span><span class="pn">)</span>
         <span class="pn">}</span>
